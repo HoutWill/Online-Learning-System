@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}Enroll Student in {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>➕ Enroll Student in "{{ course.title }}"</h2>
+    <p class="text-muted">Select a student from the list below to enroll them.</p>
+
+    <form method="POST" class="card shadow-sm p-4 border-0">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="student" class="form-label fw-bold">Choose Student</label>
+            <select name="student" id="student" class="form-select" required>
+                <option value="" selected disabled>-- Select a student --</option>
+                {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.username }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn btn-success">Enroll Student</button>
+        <a href="{% url 'course_enrollments' course.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

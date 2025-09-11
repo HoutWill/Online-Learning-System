@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Assignment Form{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <h2>{% if form.instance.pk %}Edit{% else %}Add{% endif %} Assignment - {{ course.title }}</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Save</button>
+        <a href="{% url 'lesson_list' course.id %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}

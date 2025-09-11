@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Login</title>
+<style>
+    * { box-sizing: border-box; margin:0; padding:0; }
+    body, html { height: 100%; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background:#f0f2f5; display:flex; justify-content:center; align-items:center; }
+
+    /* Preloader */
+    #preloader {
+        position: fixed; top:0; left:0; width:100%; height:100%;
+        background:#f0f2f5; display:flex; justify-content:center; align-items:center; z-index:9999; flex-direction: column;
+    }
+    #preloader span {
+        display:block; width:50px; height:50px;
+        border:5px solid #007bff; border-top-color: transparent; border-radius:50%; animation: spin 1s linear infinite; margin-bottom:15px;
+    }
+    #preloader p { color:#007bff; font-size:18px; }
+    @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+
+    /* Wrapper split 40% left, 60% right */
+    .login-wrapper {
+        display: flex;
+        width: 900px; max-width: 95%;
+        height: 500px; max-height: 90%;
+        background: #fff;
+        box-shadow:0 15px 30px rgba(0,0,0,0.1);
+        border-radius:12px;
+        opacity: 0;
+        transform: scale(0.9);
+        transition: all 0.8s ease;
+        overflow: hidden;
+    }
+    .login-wrapper.show {
+        opacity: 1;
+        transform: scale(1);
+    }
+
+    /* Left side: login form 40% */
+    .login-form {
+        width: 40%;
+        padding: 40px 30px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+    .login-form h1 { margin-bottom:30px; color:#333; font-size:32px; text-align:center; }
+    .form-group { margin-bottom:20px; text-align:left; }
+    label { display:block; margin-bottom:8px; color:#555; font-weight:500; }
+    input[type="text"], input[type="password"] {
+        width:100%; padding:12px 15px; border-radius:6px; border:1px solid #ccc; font-size:16px;
+        transition:border-color 0.3s;
+    }
+    input:focus { border-color:#007bff; outline:none; }
+    button { width:100%; padding:12px; border:none; border-radius:6px; background:#007bff; color:#fff; font-size:18px; cursor:pointer; transition:background 0.3s; }
+    button:hover { background:#0056b3; }
+
+    /* Right side empty 60% */
+    .login-empty {
+        width: 60%;
+        background:#f8f9fa; /* light background */
+    }
+
+    /* Responsive */
+    @media(max-width:768px){
+        .login-wrapper { flex-direction: column; height:auto; }
+        .login-form, .login-empty { width: 100%; height:auto; }
+    }
+</style>
+</head>
+<body>
+
+<!-- Preloader -->
+<div id="preloader">
+    <span></span>
+    <p>Loading...</p>
+</div>
+
+<!-- Login Wrapper -->
+<div class="login-wrapper" id="loginWrapper" style="display:none;">
+    <div class="login-form">
+        <h1>Login</h1>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label for="{{ form.username.id_for_label }}">Username</label>
+                {{ form.username }}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                {{ form.password }}
+            </div>
+            <button type="submit">Log In</button>
+        </form>
+    </div>
+    <div class="login-empty"></div>
+</div>
+
+<script>
+    window.addEventListener('load', function() {
+        setTimeout(function() {
+            document.getElementById('preloader').style.display = 'none';
+            const wrapper = document.getElementById('loginWrapper');
+            wrapper.style.display = 'flex';
+            setTimeout(() => wrapper.classList.add('show'), 50);
+        }, 1000); // 1-second loading delay
+    });
+</script>
+
+</body>
+</html>

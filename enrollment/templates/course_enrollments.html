@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Enrollments for {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>👨‍🎓 Enrollments for "{{ course.title }}"</h2>
+
+    <table class="table table-bordered table-hover shadow-sm">
+        <thead class="table-light">
+            <tr>
+                <th>Student</th>
+                <th>Enrolled At</th>
+                <th>Progress (%)</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for enrollment in enrollments %}
+            <tr>
+                <td>{{ enrollment.student.username }}</td>
+                <td>{{ enrollment.enrolled_at|date:"M d, Y" }}</td>
+                <td>{{ enrollment.progress|floatformat:2 }}</td>
+                <td>
+                    {% if enrollment.completed %}
+                        <span class="badge bg-success">Completed</span>
+                    {% else %}
+                        <span class="badge bg-warning text-dark">In Progress</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'remove_enrollment' enrollment.id %}" 
+                       class="btn btn-danger btn-sm">Remove</a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">No students enrolled yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'manage_enrollments' %}" class="btn btn-secondary">← Back to All Enrollments</a>
+</div>
+{% endblock %}

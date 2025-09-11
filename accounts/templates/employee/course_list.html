@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}All Courses{% endblock %}
+{% block content %}
+<h2>All Courses</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>ID</th><th>Title</th><th>Instructor</th><th>Category</th><th>Price</th><th>Published</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for c in courses %}
+        <tr>
+            <td>{{ c.id }}</td>
+            <td>{{ c.title }}</td>
+            <td>{{ c.instructor.username }}</td>
+            <td>{{ c.category.name }}</td>
+            <td>{{ c.price }}</td>
+            <td>{{ c.published_status }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+    

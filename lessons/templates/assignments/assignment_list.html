@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Assignments - {{ course.title }}{% endblock %}
+{% block content %}
+<div class="container my-4">
+    <h2>Assignments for {{ course.title }}</h2>
+
+    <a href="{% url 'assignment_add_edit' course.id %}" class="btn btn-success mb-3">Add Assignment</a>
+
+    <ul class="list-group">
+        {% for a in assignments %}
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <div>
+                    <strong>{{ a.title }}</strong> - Due: {{ a.due_date|date:"Y-m-d H:i" }}
+                </div>
+                <div>
+                    <a href="{% url 'assignment_edit' a.id %}" class="btn btn-sm btn-warning">Edit</a>
+                    <a href="{% url 'assignment_delete' a.id %}" class="btn btn-sm btn-danger">Delete</a>
+                </div>
+            </li>
+        {% empty %}
+            <li class="list-group-item">No assignments yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+{% endblock %}

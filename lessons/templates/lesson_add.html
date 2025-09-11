@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}{% if form.instance.pk %}Edit{% else %}Add{% endif %} Lesson{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow-lg border-0 rounded-4">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center rounded-top-4">
+            <h4 class="mb-0">
+                {% if form.instance.pk %}✏️ Edit{% else %}➕ Add{% endif %} Lesson
+            </h4>
+            <span class="fw-light">for "{{ course.title }}"</span>
+        </div>
+        <div class="card-body">
+            <form method="post" class="p-3">
+                {% csrf_token %}
+                <div class="mb-3">
+                    {{ form.as_p }}
+                </div>
+
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-success px-4">
+                        {% if form.instance.pk %}Update{% else %}Add{% endif %}
+                    </button>
+                    <a href="{% url 'lesson_list' course.id %}" class="btn btn-outline-secondary px-4">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>Welcome, {{ user.username }}</h2>
+    <p>Browse courses and enroll to access lessons.</p>
+
+    <!-- Search form -->
+    <form method="get" class="mb-3 d-flex gap-2">
+        <input type="text" name="q" class="form-control" placeholder="Search courses..." value="{{ query }}">
+        <button type="submit" class="btn btn-primary">
+            <i class="fas fa-search me-1"></i> Search
+        </button>
+    </form>
+
+    <!-- Category Tabs -->
+    <ul class="nav nav-tabs mb-3" id="courseTabs" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="all-tab" href="#all" data-bs-toggle="tab" role="tab" aria-controls="all" aria-selected="true">All Courses</a>
+        </li>
+        {% for category in categories %}
+        <li class="nav-item">
+            <a class="nav-link" id="cat-{{ category.id }}-tab" href="#cat-{{ category.id }}" data-bs-toggle="tab" role="tab" aria-controls="cat-{{ category.id }}" aria-selected="false">{{ category.name }}</a>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content">
+        <!-- All Courses -->
+        <div class="tab-pane fade show active" id="all" role="tabpanel" aria-labelledby="all-tab">
+            <div class="row g-4">
+                {% for item in courses_with_progress %}
+                    {% with course=item.course %}
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm hover-shadow">
+                            {% if course.image %}
+                                <img src="{{ course.image.url }}" class="card-img-top card-img-top-fixed" alt="{{ course.title }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ course.title }}</h5>
+                                <p class="text-muted mb-2">Taught by: {{ course.instructor.username }}</p>
+                                <p class="card-text">{{ course.description|truncatechars:120 }}</p>
+                                <p class="fw-bold text-success mb-2">${{ course.price }}</p>
+
+                                <!-- Star rating (overall average) -->
+                                <div class="mb-2">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= item.avg_rating %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% else %}
+                                            <i class="fas fa-star text-secondary"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="ms-1 text-muted">({{ item.total_reviews }} reviews)</span>
+                                </div>
+
+                                <!-- Highlight student's rating if exists -->
+                                {% if item.user_rating > 0 %}
+                                    <div class="mb-2">
+                                        <strong>Your Rating:</strong>
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= item.user_rating %}
+                                                <i class="fas fa-star text-primary"></i>
+                                            {% else %}
+                                                <i class="fas fa-star text-secondary"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                <!-- Rate Course Button -->
+                                <a href="{% url 'course_review' course.id %}" class="btn btn-outline-warning btn-sm mb-2">Rate Course ⭐</a>
+
+                                {% if item.completed %}
+                                    <span class="badge bg-success mb-2">Completed ✅</span>
+                                {% endif %}
+
+                                <!-- Progress bar -->
+                                <div class="mb-2">
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar" role="progressbar"
+                                             style="width: {{ item.progress }}%;"
+                                             aria-valuenow="{{ item.progress }}"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                             {{ item.progress }}%
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if item.progress > 0 %}
+                                    <a href="{% url 'lesson_list' course.id %}" class="btn btn-primary">View Lessons</a>
+                                {% else %}
+                                    <a href="{% url 'enroll_course' course.id %}" class="btn btn-success">Enroll</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endwith %}
+                {% empty %}
+                    <div class="col-12">
+                        <p class="text-muted text-center">No courses available.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+
+        <!-- Courses by Category -->
+        {% for category in categories %}
+        <div class="tab-pane fade" id="cat-{{ category.id }}" role="tabpanel" aria-labelledby="cat-{{ category.id }}-tab">
+            <div class="row g-4">
+                {% for item in courses_with_progress %}
+                    {% with course=item.course %}
+                    {% if course.category.id == category.id %}
+                    <div class="col-md-4">
+                        <div class="card h-100 shadow-sm hover-shadow">
+                            {% if course.image %}
+                                <img src="{{ course.image.url }}" class="card-img-top card-img-top-fixed" alt="{{ course.title }}">
+                            {% endif %}
+                            <div class="card-body">
+                                <h5 class="card-title">{{ course.title }}</h5>
+                                <p class="text-muted mb-2">Taught by: {{ course.instructor.username }}</p>
+                                <p class="card-text">{{ course.description|truncatechars:120 }}</p>
+                                <p class="fw-bold text-success mb-2">${{ course.price }}</p>
+
+                                <!-- Star rating (overall average) -->
+                                <div class="mb-2">
+                                    {% for i in "12345" %}
+                                        {% if forloop.counter <= item.avg_rating %}
+                                            <i class="fas fa-star text-warning"></i>
+                                        {% else %}
+                                            <i class="fas fa-star text-secondary"></i>
+                                        {% endif %}
+                                    {% endfor %}
+                                    <span class="ms-1 text-muted">({{ item.total_reviews }} reviews)</span>
+                                </div>
+
+                                <!-- Highlight student's rating if exists -->
+                                {% if item.user_rating > 0 %}
+                                    <div class="mb-2">
+                                        <strong>Your Rating:</strong>
+                                        {% for i in "12345" %}
+                                            {% if forloop.counter <= item.user_rating %}
+                                                <i class="fas fa-star text-primary"></i>
+                                            {% else %}
+                                                <i class="fas fa-star text-secondary"></i>
+                                            {% endif %}
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
+
+                                <!-- Rate Course Button -->
+                                <a href="{% url 'course_review' course.id %}" class="btn btn-outline-warning btn-sm mb-2">Rate Course ⭐</a>
+
+                                {% if item.completed %}
+                                    <span class="badge bg-success mb-2">Completed ✅</span>
+                                {% endif %}
+
+                                <!-- Progress bar -->
+                                <div class="mb-2">
+                                    <div class="progress" style="height: 20px;">
+                                        <div class="progress-bar" role="progressbar"
+                                             style="width: {{ item.progress }}%;"
+                                             aria-valuenow="{{ item.progress }}"
+                                             aria-valuemin="0"
+                                             aria-valuemax="100">
+                                             {{ item.progress }}%
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {% if item.progress > 0 %}
+                                    <a href="{% url 'lesson_list' course.id %}" class="btn btn-primary">View Lessons</a>
+                                {% else %}
+                                    <a href="{% url 'enroll_course' course.id %}" class="btn btn-success">Enroll</a>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% endwith %}
+                {% empty %}
+                    <div class="col-12">
+                        <p class="text-muted text-center">No courses in this category.</p>
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

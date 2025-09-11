@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}All Enrollments{% endblock %}
+{% block content %}
+<h2>All Enrollments</h2>
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Student</th><th>Course</th><th>Progress</th><th>Completed</th><th>Enrolled At</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for e in enrollments %}
+        <tr>
+            <td>{{ e.student.username }}</td>
+            <td>{{ e.course.title }}</td>
+            <td>{{ e.progress }}%</td>
+            <td>{{ e.completed }}</td>
+            <td>{{ e.enrolled_at }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

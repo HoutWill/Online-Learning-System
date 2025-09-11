@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Add User{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow-lg mx-auto" style="max-width: 800px;">
+        <div class="card-header bg-primary text-white text-center">
+            <h3 class="mb-0">Add New User</h3>
+        </div>
+        <div class="card-body">
+            <form method="POST" class="row g-3">
+                {% csrf_token %}
+                
+                <!-- Username & Email -->
+                <div class="col-md-6">
+                    <label for="{{ form.username.id_for_label }}" class="form-label fw-semibold">
+                        {{ form.username.label }}
+                    </label>
+                    {{ form.username }}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.email.id_for_label }}" class="form-label fw-semibold">
+                        {{ form.email.label }}
+                    </label>
+                    {{ form.email }}
+                </div>
+
+                <!-- Password & Confirm Password (side by side) -->
+                <div class="col-md-6">
+                    <label for="{{ form.password1.id_for_label }}" class="form-label fw-semibold">
+                        {{ form.password1.label }}
+                    </label>
+                    {{ form.password1 }}
+                </div>
+                <div class="col-md-6">
+                    <label for="{{ form.password2.id_for_label }}" class="form-label fw-semibold">
+                        {{ form.password2.label }}
+                    </label>
+                    {{ form.password2 }}
+                </div>
+
+                <!-- Role -->
+                <div class="col-md-6">
+                    <label for="{{ form.role.id_for_label }}" class="form-label fw-semibold">
+                        {{ form.role.label }}
+                    </label>
+                    {{ form.role }}
+                </div>
+
+                <!-- Submit Buttons -->
+                <div class="col-12 mt-4 text-center">
+                    <button type="submit" class="btn btn-success px-4 me-2">Create User</button>
+                    <a href="{% url 'user_list' %}" class="btn btn-secondary px-4">Cancel</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

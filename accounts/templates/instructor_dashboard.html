@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Instructor Dashboard - {{ user.username }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Welcome, {{ user.username }}</h2>
+        <div>
+            <a href="{% url 'course_add' %}" class="btn btn-success">
+                <i class="fas fa-plus-circle me-2"></i> Add Course
+            </a>
+            <a href="{% url 'category_add' %}" class="btn btn-primary">
+                <i class="fas fa-folder-plus me-2"></i> Add Category
+            </a>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-4" id="categoryTabs" role="tablist">
+        <li class="nav-item d-flex align-items-center" role="presentation">
+            <button class="nav-link active" id="all-tab" data-bs-toggle="tab" data-bs-target="#all" type="button">All Courses</button>
+        </li>
+        {% for category in categories %}
+        <li class="nav-item d-flex align-items-center" role="presentation">
+            <button class="nav-link" id="cat{{ category.id }}-tab" data-bs-toggle="tab" data-bs-target="#cat{{ category.id }}" type="button">{{ category.name }}</button>
+            <div class="ms-2">
+                <a href="{% url 'category_edit' category.id %}" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                <a href="{% url 'category_delete' category.id %}" class="btn btn-sm btn-danger"><i class="fas fa-trash-alt"></i></a>
+            </div>
+        </li>
+        {% endfor %}
+    </ul>
+
+    <div class="tab-content">
+
+        <div class="tab-pane fade show active" id="all" role="tabpanel">
+            <div class="row g-4">
+                {% for course in all_courses %}
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm hover-shadow">
+                        {% if course.image %}
+                        <img src="{{ course.image.url }}" class="card-img-top card-img-top-fixed" alt="{{ course.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ course.title }}</h5>
+                            <p class="card-text text-truncate">{{ course.description|truncatechars:80 }}</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <span class="fw-bold">${{ course.price }}</span>
+                            <div class="btn-group">
+                                <a href="{% url 'lesson_list' course.pk %}" class="btn btn-sm btn-success">View</a>
+                                <a href="{% url 'course_edit' course.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'course_delete' course.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted">No courses available.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        {% for category in categories %}
+        <div class="tab-pane fade" id="cat{{ category.id }}" role="tabpanel">
+            <div class="row g-4">
+                {% for course in category.course_set.all %}
+                <div class="col-md-4">
+                    <div class="card h-100 shadow-sm hover-shadow">
+                        {% if course.image %}
+                        <img src="{{ course.image.url }}" class="card-img-top card-img-top-fixed" alt="{{ course.title }}">
+                        {% endif %}
+                        <div class="card-body">
+                            <h5 class="card-title">{{ course.title }}</h5>
+                            <p class="card-text text-truncate">{{ course.description|truncatechars:80 }}</p>
+                        </div>
+                        <div class="card-footer d-flex justify-content-between">
+                            <span class="fw-bold">${{ course.price }}</span>
+                            <div class="btn-group">
+                                <a href="{% url 'lesson_list' course.pk %}" class="btn btn-sm btn-success">View</a>
+                                <a href="{% url 'course_edit' course.pk %}" class="btn btn-sm btn-warning">Edit</a>
+                                <a href="{% url 'course_delete' course.pk %}" class="btn btn-sm btn-danger">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="text-muted">No courses in this category.</p>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+{% endblock %}

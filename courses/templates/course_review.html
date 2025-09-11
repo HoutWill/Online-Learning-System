@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Rate {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>Rate "{{ course.title }}"</h2>
+
+    <!-- Rating form -->
+    <form method="post">
+        {% csrf_token %}
+        <div class="mb-3">
+            <label for="rating" class="form-label">Rating (1-5 stars)</label>
+            <select name="rating" id="rating" class="form-control">
+                {% for i in "12345" %}
+                    <option value="{{ forloop.counter }}" {% if existing_review and existing_review.rating == forloop.counter %}selected{% endif %}>
+                        {{ forloop.counter }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label for="comment" class="form-label">Comment</label>
+            <textarea name="comment" id="comment" rows="4" class="form-control">{% if existing_review %}{{ existing_review.comment }}{% endif %}</textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit Rating</button>
+        <a href="{% url 'student_dashboard' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+
+    <!-- Existing reviews -->
+    <hr>
+    <h4 class="mt-4">Course Reviews</h4>
+    {% if reviews %}
+        {% for review in reviews %}
+            <div class="card mb-3 shadow-sm">
+                <div class="card-body">
+                    <h6 class="card-subtitle mb-1 text-muted">{{ review.student.username }} 
+                        <span class="ms-2">
+                            {% for i in "12345" %}
+                                {% if forloop.counter <= review.rating %}
+                                    <i class="fas fa-star text-warning"></i>
+                                {% else %}
+                                    <i class="far fa-star text-warning"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </span>
+                    </h6>
+                    <p class="card-text">{{ review.comment }}</p>
+                    <small class="text-muted">{{ review.created_at|date:"M d, Y H:i" }}</small>
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">No reviews yet for this course.</p>
+    {% endif %}
+</div>
+{% endblock %}

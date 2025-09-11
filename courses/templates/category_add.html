@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Add Category{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="card shadow-sm mx-auto" style="max-width: 500px;">
+        <div class="card-body">
+            <h3 class="mb-4">Add Category</h3>
+
+            {% if error %}
+                <div class="alert alert-danger">{{ error }}</div>
+            {% endif %}
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="mb-3">
+                    <label for="id_name" class="form-label">Category Name</label>
+                    <input type="text" name="name" id="id_name" class="form-control" required>
+                </div>
+                <button type="submit" class="btn btn-success">Add Category</button>
+                <a href="{%url 'instructor_dashboard'%}" class="btn btn-secondary ms-2">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

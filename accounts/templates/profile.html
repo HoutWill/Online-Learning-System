@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="card shadow-sm p-4">
+        <div class="d-flex align-items-center">
+            <i class="fas fa-user-circle fa-5x text-secondary me-4"></i>
+            <div>
+                <h3 class="mb-1">{{ user.username }}</h3>
+                <p class="text-muted mb-2">{{ user.email }}</p>
+                <span class="badge bg-primary">{{ user.role|title }}</span>
+            </div>
+        </div>
+        <hr>
+        <h5>Account Information</h5>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item"><strong>Username:</strong> {{ user.username }}</li>
+            <li class="list-group-item"><strong>Email:</strong> {{ user.email }}</li>
+            <li class="list-group-item"><strong>Role:</strong> {{ user.role|title }}</li>
+         
+        </ul>
+    </div>
+</div>
+{% endblock %}

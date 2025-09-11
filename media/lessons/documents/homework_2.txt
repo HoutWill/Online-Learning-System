@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .contact {
+            margin-bottom: 20px;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            position: relative;
+        }
+        .contact h2 {
+            margin-top: 0;
+        }
+        .contact-actions {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+        .action-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+            margin-left: 10px;
+            padding: 5px;
+        }
+        .edit-btn {
+            color: #2196F3;
+        }
+        .delete-btn {
+            color: #f44336;
+        }
+        .add-contact-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .add-contact-btn:hover {
+            background-color: #45a049;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 5px;
+            position: relative;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="tel"],
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .submit-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .submit-btn:hover {
+            background-color: #45a049;
+        }
+        .delete-modal-content {
+            text-align: center;
+        }
+        .delete-modal-actions {
+            margin-top: 20px;
+        }
+        .cancel-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .confirm-btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        hr {
+            border: 0;
+            height: 1px;
+            background-color: #ddd;
+            margin: 20px 0;
+        }
+        .required-field::after {
+            content: " *";
+            color: red;
+        }
+    </style>
+</head>
+<body>
+    <h1>Contact List</h1>
+    <div id="contacts-container">
+        <!-- Contacts will be displayed here -->
+    </div>
+    
+    <button id="addContactBtn" class="add-contact-btn">Add contact</button>
+
+    <!-- Add/Edit Contact Modal -->
+    <div id="contactModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modalTitle">Add New Contact</h2>
+            <form id="contactForm">
+                <input type="hidden" id="contactId">
+                <div class="form-group">
+                    <label for="name" class="required-field">First Name</label>
+                    <input type="text" id="name" name="name" required>
+                </div>
+                <div class="form-group">
+                    <label for="surname" class="required-field">Last Name</label>
+                    <input type="text" id="surname" name="surname" required>
+                </div>
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" id="age" name="age" min="1">
+                </div>
+                <div class="form-group">
+                    <label for="cellPhone" class="required-field">Cell Phone</label>
+                    <input type="tel" id="cellPhone" name="cellPhone" required>
+                </div>
+                <div class="form-group">
+                    <label for="homePhone">Home Phone</label>
+                    <input type="tel" id="homePhone" name="homePhone">
+                </div>
+                <button type="submit" class="submit-btn" id="submitBtn">Save Contact</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content delete-modal-content">
+            <span class="close">&times;</span>
+            <h2>Delete Contact</h2>
+            <p>Are you sure you want to delete this contact?</p>
+            <div class="delete-modal-actions">
+                <button id="cancelDeleteBtn" class="cancel-btn">Cancel</button>
+                <button id="confirmDeleteBtn" class="confirm-btn">Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class Contact {
+            constructor(id, name, surname, cellPhone, age = null, homePhone = null) {
+                this.id = id;
+                this.name = name;
+                this.surname = surname;
+                this.age = age;
+                this.cellPhone = cellPhone;
+                this.homePhone = homePhone;
+            }
+
+            displayInfo() {
+                let info = `<div class="contact" id="contact-${this.id}">
+                    <div class="contact-actions">
+                        <button class="action-btn edit-btn" data-id="${this.id}">Edit</button>
+                        <button class="action-btn delete-btn" data-id="${this.id}">Delete</button>
+                    </div>
+                    <h2>${this.name} ${this.surname}</h2>`;
+                
+                if (this.age) {
+                    info += `<p><strong>Age:</strong> ${this.age}</p>`;
+                }
+                
+                info += `<p><strong>Cell phone:</strong> ${this.cellPhone}</p>`;
+                
+                if (this.homePhone) {
+                    info += `<p><strong>Home phone:</strong> ${this.homePhone}</p>`;
+                }
+                
+                info += `</div><hr>`;
+                return info;
+            }
+        }
+
+        class ContactList {
+            constructor() {
+                this.contacts = [];
+                this.nextId = 1;
+            }
+
+            addContact(name, surname, cellPhone, age = null, homePhone = null) {
+                const newContact = new Contact(
+                    this.nextId,
+                    name,
+                    surname,
+                    cellPhone,
+                    age,
+                    homePhone
+                );
+                this.contacts.push(newContact);
+                this.nextId++;
+                return newContact;
+            }
+
+            updateContact(id, name, surname, cellPhone, age = null, homePhone = null) {
+                const contact = this.getContactById(id);
+                if (contact) {
+                    contact.name = name;
+                    contact.surname = surname;
+                    contact.age = age;
+                    contact.cellPhone = cellPhone;
+                    contact.homePhone = homePhone;
+                    return true;
+                }
+                return false;
+            }
+
+            deleteContact(id) {
+                const index = this.contacts.findIndex(contact => contact.id === id);
+                if (index !== -1) {
+                    this.contacts.splice(index, 1);
+                    return true;
+                }
+                return false;
+            }
+
+            getContactById(id) {
+                return this.contacts.find(contact => contact.id === id);
+            }
+
+            renderContacts() {
+                const container = document.getElementById('contacts-container');
+                container.innerHTML = '';
+                
+                this.contacts.forEach(contact => {
+                    container.innerHTML += contact.displayInfo();
+                });
+
+                // Add event listeners to edit and delete buttons
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = parseInt(e.target.getAttribute('data-id'));
+                        this.openEditModal(id);
+                    });
+                });
+
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const id = parseInt(e.target.getAttribute('data-id'));
+                        this.openDeleteModal(id);
+                    });
+                });
+            }
+        }
+
+        // Initialize contact list with sample data
+        const contactList = new ContactList();
+        contactList.addContact("Sophia", "Johnson", "+12011234567", 23, "2021234567");
+        contactList.addContact("William", "Jones", "+12011234568", 20);
+        contactList.addContact("Jacob", "Smith", "+12011234569", 30, "2021234568");
+        contactList.addContact("Olivia", "Williams", "+12011234560");
+        contactList.renderContacts();
+
+        // Modal elements
+        const contactModal = document.getElementById("contactModal");
+        const deleteModal = document.getElementById("deleteModal");
+        const addContactBtn = document.getElementById("addContactBtn");
+        const closeButtons = document.getElementsByClassName("close");
+        const contactForm = document.getElementById("contactForm");
+        const cancelDeleteBtn = document.getElementById("cancelDeleteBtn");
+        const confirmDeleteBtn = document.getElementById("confirmDeleteBtn");
+        const modalTitle = document.getElementById("modalTitle");
+        const submitBtn = document.getElementById("submitBtn");
+
+        let currentContactId = null;
+        let isEditMode = false;
+
+        // Add Contact Button
+        addContactBtn.onclick = function() {
+            isEditMode = false;
+            modalTitle.textContent = "Add New Contact";
+            submitBtn.textContent = "Save Contact";
+            contactForm.reset();
+            contactModal.style.display = "block";
+        }
+
+        // Close Modals
+        for (let i = 0; i < closeButtons.length; i++) {
+            closeButtons[i].onclick = function() {
+                contactModal.style.display = "none";
+                deleteModal.style.display = "none";
+            }
+        }
+
+        window.onclick = function(event) {
+            if (event.target == contactModal) {
+                contactModal.style.display = "none";
+            }
+            if (event.target == deleteModal) {
+                deleteModal.style.display = "none";
+            }
+        }
+
+        // Form Submission
+        contactForm.onsubmit = function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById("name").value;
+            const surname = document.getElementById("surname").value;
+            const age = document.getElementById("age").value || null;
+            const cellPhone = document.getElementById("cellPhone").value;
+            const homePhone = document.getElementById("homePhone").value || null;
+            
+            if (isEditMode) {
+                contactList.updateContact(currentContactId, name, surname, cellPhone, age, homePhone);
+            } else {
+                contactList.addContact(name, surname, cellPhone, age, homePhone);
+            }
+            
+            contactList.renderContacts();
+            contactModal.style.display = "none";
+        }
+
+        // Open Edit Modal
+        ContactList.prototype.openEditModal = function(id) {
+            const contact = contactList.getContactById(id);
+            if (contact) {
+                isEditMode = true;
+                currentContactId = id;
+                modalTitle.textContent = "Edit Contact";
+                submitBtn.textContent = "Update Contact";
+                
+                document.getElementById("contactId").value = contact.id;
+                document.getElementById("name").value = contact.name;
+                document.getElementById("surname").value = contact.surname;
+                document.getElementById("age").value = contact.age || '';
+                document.getElementById("cellPhone").value = contact.cellPhone;
+                document.getElementById("homePhone").value = contact.homePhone || '';
+                
+                contactModal.style.display = "block";
+            }
+        }
+
+        // Open Delete Modal
+        ContactList.prototype.openDeleteModal = function(id) {
+            currentContactId = id;
+            deleteModal.style.display = "block";
+        }
+
+        // Delete Confirmation
+        confirmDeleteBtn.onclick = function() {
+            contactList.deleteContact(currentContactId);
+            contactList.renderContacts();
+            deleteModal.style.display = "none";
+        }
+
+        // Cancel Delete
+        cancelDeleteBtn.onclick = function() {
+            deleteModal.style.display = "none";
+        }
+    </script>
+</body>
+</html>

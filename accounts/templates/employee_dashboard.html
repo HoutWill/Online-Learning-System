@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Employee Dashboard{% endblock %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4">👨‍💼 Employee Dashboard</h2>
+    <p class="text-muted">Welcome, <strong>{{ user.username }}</strong></p>
+
+    <!-- Stats Overview -->
+    <div class="row g-4 mb-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center border-0 rounded-3">
+                <div class="card-body">
+                    <h5 class="fw-bold">👥 Users</h5>
+                    <p class="display-6 text-primary">{{ total_users }}</p>
+                    <small class="text-muted">
+                        Students: {{ total_students }} | Instructors: {{ total_instructors }}
+                    </small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center border-0 rounded-3">
+                <div class="card-body">
+                    <h5 class="fw-bold">👨‍💼 Employees</h5>
+                    <p class="display-6 text-success">{{ total_employees }}</p>
+                    <small class="text-muted">Active Staff</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center border-0 rounded-3">
+                <div class="card-body">
+                    <h5 class="fw-bold">📚 Courses</h5>
+                    <p class="display-6 text-warning">{{ total_courses }}</p>
+                    <small class="text-muted">Lessons: {{ total_lessons }}</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm text-center border-0 rounded-3">
+                <div class="card-body">
+                    <h5 class="fw-bold">📝 Enrollments</h5>
+                    <p class="display-6 text-danger">{{ total_enrollments }}</p>
+                    <small class="text-muted">Categories: {{ total_categories }}</small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Management Section -->
+    <div class="row g-4">
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">👥 Manage Users</h5>
+                    <p class="text-muted">View and add new users.</p>
+                    <a href="{% url 'user_list' %}" class="btn btn-primary btn-sm">View Users</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">📚 Manage Courses</h5>
+                    <p class="text-muted">Organize available courses.</p>
+                    <a href="{% url 'instructor_dashboard' %}" class="btn btn-primary btn-sm">View Courses</a>
+                  
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <h5 class="fw-bold">📚 Manage Enrollment</h5>
+                    <p class="text-muted">Organize available enrollment.</p>
+                    <a href="{% url 'manage_enrollments' %}" class="btn btn-primary btn-sm">View Courses</a>
+                  
+                </div>
+            </div>
+        </div>
+
+    
+    </div>
+</div>
+{% endblock %}
