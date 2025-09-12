@@ -9,7 +9,7 @@ class Category(models.Model):
 
 
 class Course(models.Model):
-    category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, null=True)
     description = models.TextField()
     title = models.CharField(max_length=100)
     price = models.DecimalField(max_digits=6, decimal_places=2)
