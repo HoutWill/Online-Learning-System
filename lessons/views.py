@@ -217,3 +217,67 @@ def submission_add(request, assignment_id):
         "assignment": assignment,
         "back_url": redirect_by_role(request.user, course_id=assignment.course.id)
     })
+
+# List all submissions for an assignment (Instructor only)
+@login_required
+@role_required("instructor")
+def submission_list(request, assignment_id):
+    assignment = get_object_or_404(Assignment, pk=assignment_id, course__instructor=request.user)
+    submissions = Submission.objects.filter(assignment=assignment).select_related("student")
+
+    if request.method == "POST":
+        for sub in submissions:
+            grade_key = f"grade_{sub.id}"
+            feedback_key = f"feedback_{sub.id}"
+            if grade_key in request.POST and feedback_key in request.POST:
+                sub.grade = request.POST.get(grade_key) or None
+                sub.feedback = request.POST.get(feedback_key)
+                sub.save()
+        return redirect('submission_list', assignment_id=assignment.id)
+
+    return render(request, "assignments/submission_list.html", {
+        "assignment": assignment,
+        "submissions": submissions
+    })
+
+# View a single submission (Instructor only)
+@login_required
+@role_required("instructor")
+def submission_detail(request, submission_id):
+    submission = get_object_or_404(Submission, pk=submission_id, assignment__course__instructor=request.user)
+    
+    return render(request, "assignments/submission_detail.html", {
+        "submission": submission
+    })
+
+
+# Delete a submission (Instructor only)
+@login_required
+@role_required("instructor")
+def submission_delete(request, submission_id):
+    submission = get_object_or_404(Submission, pk=submission_id, assignment__course__instructor=request.user)
+    assignment_id = submission.assignment.id
+
+    if request.method == "POST":
+        submission.delete()
+        return redirect("submission_list", assignment_id=assignment_id)
+
+    return render(request, "assignments/submission_confirm_delete.html", {
+        "submission": submission
+    })
+
+@login_required
+@role_required("student")
+def my_submissions(request, course_id):
+    course = get_object_or_404(Course, id=course_id)
+    assignments = Assignment.objects.filter(course=course)
+
+    for assignment in assignments:
+        submission = Submission.objects.filter(assignment=assignment, student=request.user).first()
+        assignment.submission = submission  # attach dynamically
+
+    context = {
+        "course": course,
+        "assignments": assignments,
+    }
+    return render(request, "assignments/my_submissions.html", context)

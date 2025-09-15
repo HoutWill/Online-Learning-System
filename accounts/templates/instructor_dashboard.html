@@ -50,7 +50,10 @@
                         <div class="card-footer d-flex justify-content-between">
                             <span class="fw-bold">${{ course.price }}</span>
                             <div class="btn-group">
-                                <a href="{% url 'lesson_list' course.pk %}" class="btn btn-sm btn-success">View</a>
+                                <a href="{% url 'lesson_list' course.pk %}" class="btn btn-sm btn-success">View Lessons</a>
+                                {% if course.assignments.exists %}
+                                <a href="{% url 'submission_list' course.assignments.first.id %}" class="btn btn-sm btn-info">View Submissions</a>
+                                {% endif %}
                                 <a href="{% url 'course_edit' course.pk %}" class="btn btn-sm btn-warning">Edit</a>
                                 <a href="{% url 'course_delete' course.pk %}" class="btn btn-sm btn-danger">Delete</a>
                             </div>
@@ -79,7 +82,10 @@
                         <div class="card-footer d-flex justify-content-between">
                             <span class="fw-bold">${{ course.price }}</span>
                             <div class="btn-group">
-                                <a href="{% url 'lesson_list' course.pk %}" class="btn btn-sm btn-success">View</a>
+                                <a href="{% url 'lesson_list' course.pk %}" class="btn btn-sm btn-success">View Lessons</a>
+                                {% if course.assignments.exists %}
+                                <a href="{% url 'submission_list' course.assignments.first.id %}" class="btn btn-sm btn-info">View Submissions</a>
+                                {% endif %}
                                 <a href="{% url 'course_edit' course.pk %}" class="btn btn-sm btn-warning">Edit</a>
                                 <a href="{% url 'course_delete' course.pk %}" class="btn btn-sm btn-danger">Delete</a>
                             </div>

@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}My Submissions - {{ course.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>My Submissions for: {{ course.title }}</h2>
+
+    <table class="table table-bordered table-striped mt-3">
+        <thead class="table-dark">
+            <tr>
+                <th>Assignment</th>
+                <th>Submitted At</th>
+                <th>File</th>
+                <th>Grade</th>
+                <th>Feedback</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for assignment in assignments %}
+            <tr>
+                <td>{{ assignment.title }}</td>
+                <td>
+                    {% if assignment.submission %}
+                        {{ assignment.submission.submitted_at|date:"M d, Y H:i" }}
+                    {% else %}
+                        Not submitted
+                    {% endif %}
+                </td>
+                <td>
+                    {% if assignment.submission and assignment.submission.file %}
+                        <a href="{{ assignment.submission.file.url }}" target="_blank" class="btn btn-sm btn-primary">Download</a>
+                    {% else %}
+                        -
+                    {% endif %}
+                </td>
+                <td>{{ assignment.submission.grade|default:"-" }}</td>
+                <td>{{ assignment.submission.feedback|default:"-" }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="5" class="text-center text-muted">No assignments yet.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{% url 'lesson_list' course.id %}" class="btn btn-secondary">Back to Lessons</a>
+</div>
+{% endblock %}

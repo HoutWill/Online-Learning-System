@@ -5,56 +5,52 @@
 
 {% block content %}
 <div class="container my-4">
+    <!-- Page Header -->
     <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap">
         <h2 class="me-3">{{ course.title }} - Lessons & Assignments</h2>
         <div class="d-flex gap-2 flex-wrap">
             {% if user_role == "instructor" %}
-                <a href="{% url 'lesson_add' course_id=course.id %}" class="btn btn-success custom-btn">
+                <a href="{% url 'lesson_add' course_id=course.id %}" class="btn btn-success btn-sm">
                     <i class="fas fa-plus me-1"></i> Add Lesson
                 </a>
-                <a href="{% url 'assignment_add_edit' course_id=course.id %}" class="btn btn-primary custom-btn">
+                <a href="{% url 'assignment_add_edit' course_id=course.id %}" class="btn btn-primary btn-sm">
                     <i class="fas fa-plus me-1"></i> Add Assignment
                 </a>
             {% endif %}
-
             {% if user_role == "student" %}
-                <a href="{% url 'student_dashboard' %}" class="btn btn-secondary custom-btn">
-                    <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                <a href="{% url 'student_dashboard' %}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
                 </a>
             {% elif user_role == "instructor" %}
-                <a href="{% url 'instructor_dashboard' %}" class="btn btn-secondary custom-btn">
-                    <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                <a href="{% url 'instructor_dashboard' %}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
                 </a>
             {% elif user_role == "employee" %}
-                <a href="{% url 'employee_dashboard' %}" class="btn btn-secondary custom-btn">
-                    <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                <a href="{% url 'employee_dashboard' %}" class="btn btn-secondary btn-sm">
+                    <i class="fas fa-arrow-left me-1"></i> Back to Dashboard
                 </a>
             {% endif %}
         </div>
     </div>
-</div>
 
     <div class="row">
-        <!-- Sidebar navigation -->
+        <!-- Sidebar -->
         <div class="col-md-3">
             <div class="list-group sticky-top">
                 {% for l in lessons %}
-                    <a href="#lesson-{{ l.pk }}" class="list-group-item list-group-item-action
-                        {% if l.pk in completed_ids %} list-group-item-success {% endif %}">
-                        {{ l.order }}. {{ l.title }}
-                        {% if l.pk in completed_ids %} ✅ {% endif %}
+                    <a href="#lesson-{{ l.pk }}" class="list-group-item list-group-item-action {% if l.pk in completed_ids %}list-group-item-success{% endif %}">
+                        {{ l.order }}. {{ l.title }} {% if l.pk in completed_ids %}✅{% endif %}
                     </a>
                 {% endfor %}
                 {% for a in assignments %}
                     <a href="#assignment-{{ a.pk }}" class="list-group-item list-group-item-action">
-                        📄 {{ a.title }}
-                        {% if user_role == "student" and a.submission %} ✅ Submitted {% endif %}
+                        📄 {{ a.title }} {% if user_role == "student" and a.submission %}✅ Submitted{% endif %}
                     </a>
                 {% endfor %}
             </div>
         </div>
 
-        <!-- Main content -->
+        <!-- Main Content -->
         <div class="col-md-9">
             <!-- Lessons -->
             {% for l in lessons %}
@@ -64,56 +60,45 @@
                         <h5>{{ l.order }}. {{ l.title }}</h5>
                         {% if user_role == "instructor" %}
                             <div class="d-flex gap-2">
-                                <a href="{% url 'lesson_edit' lesson_id=l.pk %}" class="btn btn-warning btn-sm custom-btn">Edit</a>
-                                <a href="{% url 'lesson_delete' l.pk %}" class="btn btn-danger btn-sm custom-btn">Delete</a>
-                                <a href="{% url 'lesson_content_edit' l.pk %}" class="btn btn-primary btn-sm custom-btn">Add/Edit Content</a>
+                                <a href="{% url 'lesson_edit' lesson_id=l.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{% url 'lesson_delete' l.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                                <a href="{% url 'lesson_content_edit' l.pk %}" class="btn btn-primary btn-sm">Add/Edit Content</a>
                             </div>
                         {% elif user_role == "student" %}
-                            <div>
-                                {% if l.pk not in completed_ids %}
-                                    <a href="{% url 'complete_lesson' l.pk %}" class="btn btn-success btn-sm custom-btn">
-                                        Mark as Completed
-                                    </a>
-                                {% else %}
-                                    <span class="badge bg-success">Completed ✅</span>
-                                {% endif %}
-                            </div>
+                            {% if l.pk not in completed_ids %}
+                                <a href="{% url 'complete_lesson' l.pk %}" class="btn btn-success btn-sm">Mark as Completed</a>
+                            {% else %}
+                                <span class="badge bg-success">Completed ✅</span>
+                            {% endif %}
                         {% elif user_role == "employee" %}
-                            <div><span class="badge bg-info text-dark">View Only</span></div>
+                            <span class="badge bg-info text-dark">View Only</span>
                         {% endif %}
                     </div>
 
                     {% if l.content.description %}<p class="text-muted">{{ l.content.description|linebreaks }}</p>{% endif %}
+
                     {% if l.content.video_url %}
-                            <div class="mb-3">
-                                <div class="ratio ratio-16x9">
-                                    {% comment %}Convert normal YouTube URL to embed format on the fly{% endcomment %}
-                                    {% if "youtube.com/watch" in l.content.video_url %}
-                                        {% with l.content.video_url|cut:"https://www.youtube.com/watch?v=" as video_id %}
-                                            <iframe src="https://www.youtube.com/embed/{{ video_id }}" title="{{ l.title }}" allowfullscreen></iframe>
-                                        {% endwith %}
-                                    {% elif "youtu.be" in l.content.video_url %}
-                                        {% with l.content.video_url|cut:"https://youtu.be/" as video_id %}
-                                            <iframe src="https://www.youtube.com/embed/{{ video_id }}" title="{{ l.title }}" allowfullscreen></iframe>
-                                        {% endwith %}
-                                    {% else %}
-                                        <iframe src="{{ l.content.video_url }}" title="{{ l.title }}" allowfullscreen></iframe>
-                                    {% endif %}
-                                </div>
+                        <div class="mb-3">
+                            <div class="ratio ratio-16x9">
+                                {% if "youtube.com/watch" in l.content.video_url %}
+                                    {% with l.content.video_url|cut:"https://www.youtube.com/watch?v=" as video_id %}
+                                        <iframe src="https://www.youtube.com/embed/{{ video_id }}" allowfullscreen></iframe>
+                                    {% endwith %}
+                                {% elif "youtu.be" in l.content.video_url %}
+                                    {% with l.content.video_url|cut:"https://youtu.be/" as video_id %}
+                                        <iframe src="https://www.youtube.com/embed/{{ video_id }}" allowfullscreen></iframe>
+                                    {% endwith %}
+                                {% else %}
+                                    <iframe src="{{ l.content.video_url }}" allowfullscreen></iframe>
+                                {% endif %}
                             </div>
-                        {% endif %}
+                        </div>
+                    {% endif %}
 
                     {% if l.content.document %}
-                        <a href="{{ l.content.document.url }}" target="_blank" class="btn btn-outline-primary btn-sm custom-btn">
-                            <i class="fas fa-file-download me-2"></i> Download File
+                        <a href="{{ l.content.document.url }}" target="_blank" class="btn btn-outline-primary btn-sm">
+                            <i class="fas fa-file-download me-1"></i> Download File
                         </a>
-                    {% endif %}
-                    {% if not l.content.description and not l.content.video_url and not l.content.document %}
-                        {% if user_role == "instructor" %}
-                            <p class="text-muted">No content yet. <a href="{% url 'lesson_content_edit' l.pk %}">Add content</a>.</p>
-                        {% else %}
-                            <p class="text-muted">No content yet.</p>
-                        {% endif %}
                     {% endif %}
                 </div>
             </div>
@@ -128,23 +113,28 @@
                         <h5>📄 {{ a.title }}</h5>
                         {% if user_role == "instructor" %}
                             <div class="d-flex gap-2">
-                                <a href="{% url 'assignment_edit' assignment_id=a.pk %}" class="btn btn-warning btn-sm custom-btn">Edit</a>
-                                <a href="{% url 'assignment_delete' assignment_id=a.pk %}" class="btn btn-danger btn-sm custom-btn">Delete</a>
+                                <a href="{% url 'assignment_edit' assignment_id=a.pk %}" class="btn btn-warning btn-sm">Edit</a>
+                                <a href="{% url 'assignment_delete' assignment_id=a.pk %}" class="btn btn-danger btn-sm">Delete</a>
+                                <a href="{% url 'submission_list' assignment_id=a.pk %}" class="btn btn-primary btn-sm">View Submissions</a>
                             </div>
                         {% elif user_role == "student" %}
                             <div>
                                 {% if a.submission %}
                                     <span class="badge bg-success">Submitted ✅</span>
                                 {% else %}
-                                    <a href="{% url 'submission_add' assignment_id=a.pk %}" class="btn btn-success btn-sm custom-btn">Submit</a>
+                                    <a href="{% url 'submission_add' assignment_id=a.pk %}" class="btn btn-success btn-sm">Submit</a>
                                 {% endif %}
                             </div>
                         {% elif user_role == "employee" %}
-                            <div><span class="badge bg-info text-dark">View Only</span></div>
+                            <span class="badge bg-info text-dark">View Only</span>
                         {% endif %}
                     </div>
                     <p class="text-muted">{{ a.description|linebreaks }}</p>
                     <p class="text-muted"><strong>Due:</strong> {{ a.due_date|date:"M d, Y H:i" }}</p>
+
+                    {% if user_role == "student" and a.submission %}
+                        <p><strong>Grade:</strong> {{ a.submission.grade|default:"-" }} | <strong>Feedback:</strong> {{ a.submission.feedback|default:"-" }}</p>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
@@ -152,7 +142,6 @@
     </div>
 </div>
 
-<!-- Smooth scroll -->
 <script>
 document.querySelectorAll('.list-group a').forEach(anchor => {
     anchor.addEventListener('click', function (e) {
@@ -164,7 +153,4 @@ document.querySelectorAll('.list-group a').forEach(anchor => {
     });
 });
 </script>
-
-<!-- Custom Button Styles -->
-
 {% endblock %}

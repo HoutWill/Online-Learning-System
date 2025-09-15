@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Submissions - {{ assignment.title }}{% endblock %}
+
+{% block content %}
+<div class="container my-4">
+    <h2>Submissions for: {{ assignment.title }}</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        <table class="table table-bordered table-striped mt-3">
+            <thead class="table-dark">
+                <tr>
+                    <th>Student</th>
+                    <th>Submitted At</th>
+                    <th>File</th>
+                    <th>Grade</th>
+                    <th>Feedback</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for sub in submissions %}
+                <tr>
+                    <td>{{ sub.student.username }}</td>
+                    <td>{{ sub.submitted_at|date:"M d, Y H:i" }}</td>
+                    <td>
+                        {% if sub.file %}
+                        <a href="{{ sub.file.url }}" target="_blank" class="btn btn-sm btn-primary">Download</a>
+                        {% else %}
+                        No file
+                        {% endif %}
+                    </td>
+                    <td>
+                        <input type="number" name="grade_{{ sub.id }}" value="{{ sub.grade }}" class="form-control" min="0" max="100">
+                    </td>
+                    <td>
+                        <input type="text" name="feedback_{{ sub.id }}" value="{{ sub.feedback }}" class="form-control">
+                    </td>
+                    <td>
+                        <button type="submit" name="save_{{ sub.id }}" class="btn btn-sm btn-success">Save</button>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center text-muted">No submissions yet.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+
+    <a href="{% url 'instructor_dashboard' %}" class="btn btn-secondary">Back to Assignments</a>
+</div>
+{% endblock %}
