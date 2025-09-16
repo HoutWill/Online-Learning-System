@@ -26,13 +26,7 @@ A role-based learning platform built with **Django** that allows students to enr
 
 ## 🖼 Screenshots
 
-| Login | Student Dashboard | Instructor Dashboard |
-|---|---|---|
-| ![Login](screenshots/LoginPage.png) | ![Student](screenshots/student_dashboard.png) | ![Instructor](screenshots/Instructor_dashboard.png) |
-
-| Employee Dashboard | Assignment | Lesson Content |
-|---|---|---|
-| ![Employee](screenshots/Employee_Dashboard.png) | ![Assignment](screenshots/Assignment.png) | ![Lesson](screenshots/Lesson_Content.png) |
+<div style="display: flex; flex-wrap: wrap; gap: 20px;"> <div style="flex: 1;"> <b>Login</b><br> <img src="screenshots/LoginPage.png" width="500"> </div> <div style="flex: 1;"> <b>Student Dashboard</b><br> <img src="screenshots/student_dashboard.png" width="500"> </div> <div style="flex: 1;"> <b>Instructor Dashboard</b><br> <img src="screenshots/Instructor_dashboard.png" width="500"> </div> <div style="flex: 1;"> <b>Employee Dashboard</b><br> <img src="screenshots/Employee_Dashboard.png" width="500"> </div> <div style="flex: 1;"> <b>Assignment</b><br> <img src="screenshots/Assignment.png" width="500"> </div> <div style="flex: 1;"> <b>Lesson Content</b><br> <img src="screenshots/Lesson_Content.png" width="500"> </div> </div>
 
 ---
 | Role       | Username   | Password         |
