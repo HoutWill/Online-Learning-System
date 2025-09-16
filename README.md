@@ -26,7 +26,7 @@ A role-based learning platform built with **Django** that allows students to enr
 
 ## 🖼 Screenshots
 
-<table> <tr> <td align="center"> <b>Login</b><br> <img src="screenshots/LoginPage.png" width="300"> </td> <td align="center"> <b>Student Dashboard</b><br> <img src="screenshots/student_dashboard.png" width="300"> </td> </tr> <tr> <td align="center"> <b>Instructor Dashboard</b><br> <img src="screenshots/Instructor_dashboard.png" width="300"> </td> <td align="center"> <b>Employee Dashboard</b><br> <img src="screenshots/Employee_Dashboard.png" width="300"> </td> </tr> <tr> <td align="center"> <b>Assignment</b><br> <img src="screenshots/Assignment.png" width="300"> </td> <td align="center"> <b>Lesson Content</b><br> <img src="screenshots/Lesson_Content.png" width="300"> </td> </tr> </table>
+<table> <tr> <td align="center"> <b>Login</b><br> <img src="screenshots/LoginPage.png" width="600"> </td> <td align="center"> <b>Student Dashboard</b><br> <img src="screenshots/student_dashboard.png" width="600"> </td> </tr> <tr> <td align="center"> <b>Instructor Dashboard</b><br> <img src="screenshots/Instructor_dashboard.png" width="600"> </td> <td align="center"> <b>Employee Dashboard</b><br> <img src="screenshots/Employee_Dashboard.png" width="600"> </td> </tr> <tr> <td align="center"> <b>Assignment</b><br> <img src="screenshots/Assignment.png" width="600"> </td> <td align="center"> <b>Lesson Content</b><br> <img src="screenshots/Lesson_Content.png" width="600"> </td> </tr> </table>
 
 ---
 | Role       | Username   | Password         |
