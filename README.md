@@ -37,14 +37,14 @@ A role-based learning platform built with **Django** that allows students to enr
 
 
 ## ⚙️ Setup Instructions
-
-### 1. Clone the Repository
 ```bash
+### 1. Clone the Repository
+
 git clone https://github.com/HoutWill/Online-Learning-System.git
 cd Online-Learning-System
 
 2. Create a Virtual Environment
-    ```bash
+
     python -m venv venv
     source venv/Scripts/activate  # On Windows
    
@@ -52,8 +52,7 @@ cd Online-Learning-System
 
 4. python manage.py migrate
    python manage.py runserver
-   Then open http://127.0.0.1:8000
- in your browser.
+   Then open http://127.0.0.1:8000 in your browser.
 
 5. Online-Learning-System/
 ├── accounts/
