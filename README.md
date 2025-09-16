@@ -2,6 +2,8 @@
 
 A role-based learning platform built with **Django** that allows students to enroll in courses, instructors to manage content, and admins to oversee the system.
 
+There room that can improve and implement in the future.
+
 ---
 
 ## ✨ Features
@@ -34,6 +36,7 @@ A role-based learning platform built with **Django** that allows students to enr
 | Student    | `hout`     | `pass123456`     |
 | Instructor | `teacherA` | *(set manually)* |
 | Employee   | `admin1`   | *(set manually)* |
+| Admin      | `admin `   | `123456`         |
 
 
 ## ⚙️ Setup Instructions
