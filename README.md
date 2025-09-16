@@ -42,11 +42,12 @@ A role-based learning platform built with **Django** that allows students to enr
 ```bash
 git clone https://github.com/HoutWill/Online-Learning-System.git
 cd Online-Learning-System
-```
+
 2. Create a Virtual Environment
+    ```bash
     python -m venv venv
     source venv/Scripts/activate  # On Windows
-
+   
 3. pip install -r requirements.txt
 
 4. python manage.py migrate
