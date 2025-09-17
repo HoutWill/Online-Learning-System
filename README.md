@@ -34,8 +34,8 @@ There room that can improve and implement in the future.
 | Role       | Username   | Password         |
 | ---------- | ---------- | ---------------- |
 | Student    | `hout`     | `pass123456`     |
-| Instructor | `teacherA` | *(set manually)* |
-| Employee   | `admin1`   | *(set manually)* |
+| Instructor | `teacherA` | `pass123456`     |
+| Employee   | `admin1`   | `pass123456`     |
 | Admin      | `admin `   | `123456`         |
 
 
